@@ -44,25 +44,11 @@ export default function App() {
       {/* FROM */}
       <View style={styles.anotherContainer}>
         <View style={styles.translateContainer}>
-          <TranslateDropdown
-            data={[
-              { value: "FSL", label: "FSL GESTURE" }, 
-              { value: "TS", label: "TEXT/SPEECH" },
-            ]}
-            onChange={console.log}
-            placeholder="FROM"
-          />
+          <TranslateDropdown/>
         </View>
         {/* TO */}
         <View style={styles.translateContainer}>
-          <TranslateDropdown
-            data={[
-              { value: "FSL", label: "FSL GESTURE" }, 
-              { value: "TS", label: "TEXT/SPEECH" },
-            ]}
-            onChange={console.log}
-            placeholder="TO"
-          />
+          <TranslateDropdown/>
         </View>
       </View>
       {/* Text Input/Output Container */}

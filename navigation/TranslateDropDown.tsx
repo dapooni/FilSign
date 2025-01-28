@@ -1,123 +1,58 @@
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Modal, TouchableWithoutFeedback, Platform } from "react-native";
-  import React, { useCallback, useRef, useState } from "react";
-  import { AntDesign } from "@expo/vector-icons";
-  
-  type OptionItem = {
-    value: string;
-    label: string;
-  };
-  
-  interface DropDownProps {
-    data: OptionItem[];
-    onChange: (item: OptionItem) => void;
-    placeholder: string;
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { SelectCountry } from 'react-native-element-dropdown';
+
+const local_data = [
+  {
+    value: '1',
+    lable: 'FSL GESTURE',
+  },
+  {
+    value: '2',
+    lable: 'TEXT/SPEECH',
   }
-  
-  export default function Dropdown({
-    data,
-    onChange,
-    placeholder,
-  }: DropDownProps) {
-    const [expanded, setExpanded] = useState(false);
-    const toggleExpanded = useCallback(() => setExpanded(!expanded), [expanded]);
-    const [value, setValue] = useState("");
-    const buttonRef = useRef<View>(null);
-    const [top, setTop] = useState(0);
-    const onSelect = useCallback((item: OptionItem) => {
-      onChange(item);
-      setValue(item.label);
-      setExpanded(false);
-    }, []);
-    return (
-      <View
-        ref={buttonRef}
-        onLayout={(event) => {
-          const layout = event.nativeEvent.layout;
-          const topOffset = layout.y + layout.height;
-          setTop(topOffset);
-        }}
-        
-      >
-        <TouchableOpacity
-          style={styles.button}
-          activeOpacity={0.8}
-          onPress={toggleExpanded}
-        >
-          <Text style={styles.text}>{value || placeholder}</Text>
-          <AntDesign name={expanded ? "caretup" : "caretdown"} />
-        </TouchableOpacity>
-        {expanded ? (
-          <Modal visible={expanded} transparent>
-            <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
-              <View style={styles.backdrop}>
-                <View
-                  style={[
-                    styles.options,
-                    {
-                      top,
-                    },
-                  ]}
-                >
-                  <FlatList
-                    keyExtractor={(item) => item.value}
-                    data={data}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity
-                        activeOpacity={0.8}
-                        style={styles.optionItem}
-                        onPress={() => onSelect(item)}
-                      >
-                        <Text>{item.label}</Text>
-                      </TouchableOpacity>
-                    )}
-                    ItemSeparatorComponent={() => (
-                      <View style={styles.separator} />
-                    )}
-                  />
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </Modal>
-        ) : null}
-      </View>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    backdrop: {
-      padding: 120,
-      justifyContent: "center",
-      alignItems: "center",
-      flex: 1,
-      
-    },
-    optionItem: {
-      height: 40,
-      justifyContent: "center",
-    },
-    separator: {
-      height: 3,
-    },
-    options: {
-      position: "absolute",
-      backgroundColor: 'rgba(8, 48, 129, 0.7)',
-      width: "100%",
-      padding: 10,
-      borderRadius: 6,
-      maxHeight: 250,
-    },
-    text: {
-      fontSize: 15,
-      opacity: 0.8,
-      
-    },
-    button: {
-      height: 50,
-      justifyContent: "space-between",
-      flexDirection: "row",
-      width: "100%",
-      alignItems: "center",
-      paddingHorizontal: 15,
-      borderRadius: 8,
-    },
-  });
+];
+
+const SelectCountryScreen = () => {
+  const [country, setCountry] = useState<string>();
+
+  return (
+    <SelectCountry
+      style={styles.dropdown}
+      selectedTextStyle={styles.selectedTextStyle}
+      placeholderStyle={styles.placeholderStyle}
+      maxHeight={200}
+      value={country}
+      data={local_data}
+      valueField="value"
+      labelField="lable"
+      placeholder="SELECT TRANSLATE"
+      imageField="image"
+      onChange={(e) => {
+        setCountry(e.value);
+      }}
+    />
+  );
+};
+
+export default SelectCountryScreen;
+
+const styles = StyleSheet.create({
+  dropdown: {
+    margin: 16,
+    height: 20,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: 'white',
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+    marginLeft: 8,
+    color: 'Black',
+  },
+  labelFieldStyle: {
+    fontSize: 16,
+    color: 'white',
+  },
+});
