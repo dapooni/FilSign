@@ -5,11 +5,11 @@ import { SelectCountry } from 'react-native-element-dropdown';
 const local_data = [
   {
     value: '1',
-    lable: 'FSL GESTURE',
+    label: 'FSL GESTURE',
   },
   {
     value: '2',
-    lable: 'TEXT/SPEECH',
+    label: 'TEXT/SPEECH',
   }
 ];
 
@@ -21,13 +21,16 @@ const SelectCountryScreen = () => {
       style={styles.dropdown}
       selectedTextStyle={styles.selectedTextStyle}
       placeholderStyle={styles.placeholderStyle}
+      itemTextStyle={styles.itemTextStyle}  
+
+      containerStyle={styles.dropdownContainer}
       maxHeight={200}
       value={country}
       data={local_data}
       valueField="value"
-      labelField="lable"
-      placeholder="SELECT TRANSLATE"
+      labelField="label"
       imageField="image"
+      placeholder="SELECT"
       onChange={(e) => {
         setCountry(e.value);
       }}
@@ -40,19 +43,26 @@ export default SelectCountryScreen;
 const styles = StyleSheet.create({
   dropdown: {
     margin: 16,
-    height: 20,
+    height: 20
+    
   },
   placeholderStyle: {
     fontSize: 16,
     color: 'white',
+    backgroundColor: 'transparent'
   },
   selectedTextStyle: {
     fontSize: 16,
     marginLeft: 8,
-    color: 'Black',
-  },
-  labelFieldStyle: {
-    fontSize: 16,
     color: 'white',
+    
+  },
+  itemTextStyle: {
+    fontSize: 16,
+    color: 'white', 
+  },
+  dropdownContainer: {
+    backgroundColor: 'rgba(8, 48, 129, 0.7)', 
+    borderRadius: 10
   },
 });
