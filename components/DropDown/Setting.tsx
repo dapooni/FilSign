@@ -28,23 +28,24 @@ export default function Dropdown() {
     <View>
       {/* Setting Button */}
       <TouchableOpacity onPress={toggleDropdown}>
-        <Image style={styles.image} source={require('../assets/images/light-setting.png')} />
+        <Image style={styles.settingIcon} source={require('../../assets/images/light-setting.png')} />
       </TouchableOpacity>
       {showDropdown && (
         <Animated.View style={[styles.dropdownContainer, { opacity: dropdownOpacity }]}>
           {/* Dark/Light Mode Button */}
           <TouchableOpacity style={styles.dropdownButton}>
-            <Image style={styles.image} source={require('../assets/images/dark-mode.png')} />
+            <Image style={styles.image} source={require('../../assets/images/dark-mode.png')} />
           </TouchableOpacity>
           {/* Tutorial Button */}
           <TouchableOpacity style={styles.dropdownButton}>
-            <Image style={styles.image} source={require('../assets/images/light-tutorial.png')} />
+            <Image style={styles.image} source={require('../../assets/images/light-tutorial.png')} />
           </TouchableOpacity>
         </Animated.View>
       )}
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   dropdownContainer: {
@@ -58,5 +59,10 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
+  },
+  settingIcon: {
+    width: 43,
+    height: 43,
+    marginLeft: 5
   },
 });

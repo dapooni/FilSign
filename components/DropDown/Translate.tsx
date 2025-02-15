@@ -12,7 +12,7 @@ const local_data = [
   { value: '2', label: 'TEXT/SPEECH' },
 ];
 
-const TranslateDropdown: React.FC<TranslateDropdownProps> = ({
+const Translate: React.FC<TranslateDropdownProps> = ({
   selectedValue,
   onSelect,
 }) => {
@@ -37,7 +37,7 @@ const TranslateDropdown: React.FC<TranslateDropdownProps> = ({
   );
 };
 
-export default TranslateDropdown;
+export default Translate;
 
 const styles = StyleSheet.create({
   dropdown: {

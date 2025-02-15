@@ -3,8 +3,9 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, Image, TextInput } fr
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRef } from 'react';
 
-import SettingDropdown from './navigation/SettingDropDown';
-import TranslateDropdown from './navigation/TranslateDropDown';
+import SettingDropdown from './components/DropDown/Setting';
+import TranslateDropdown from './components/DropDown/Translate';
+import { styles } from "./components/styles"; 
 
 export default function App() {
   const [facing, setFacing] = useState<CameraType>('front');
@@ -26,7 +27,7 @@ export default function App() {
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <View style={styles.mainContainer}>
         <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
         <Button onPress={requestPermission} title="Grant Permission" />
       </View>
@@ -38,19 +39,20 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.mainContainer}>
+      {/* Camera Setup */}
       <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-        <View style={styles.buttonContainer}>
+        <View style={styles.upperButtons}>
           <SettingDropdown />
           <TouchableOpacity onPress={toggleCameraFacing}>
-            <Image style={styles.image} source={require('./assets/images/light-camrotate.png')} />
+            <Image style={styles.cameraIcon} source={require('./assets/images/light-camrotate.png')} />
           </TouchableOpacity>
         </View>
       </CameraView>
 
       {/* Two-Way Communication Choices */}
-      <View style={styles.anotherContainer}>
-        <View style={styles.translateContainer}>
+      <View style={styles.transContainer}>
+        <View style={styles.transDropdown}>
           <TranslateDropdown
             selectedValue={fromValue}
             onSelect={setFromValue}
@@ -59,11 +61,11 @@ export default function App() {
         {/* Switch FromSelected to ToSelected */}
         <TouchableOpacity style={styles.circle} onPress={swapValues}>
           <Image
-            style={styles.imageswitch}
+            style={styles.switchIcon}
             source={require('./assets/images/switch-way.png')}
           />
         </TouchableOpacity>
-        <View style={styles.translateContainer}>
+        <View style={styles.transDropdown}>
           <TranslateDropdown
             selectedValue={toValue}
             onSelect={setToValue}
@@ -83,7 +85,7 @@ export default function App() {
         {/* Speaker/Microphone */}
         <TouchableOpacity style={styles.speakerButton} onPress={() => setIsPressed((prevState) => !prevState)}>
           <Image
-            style={styles.image}
+            style={styles.cameraIcon}
             source={isPressed ? require('./assets/images/speaker-pressed.png') : require('./assets/images/speaker.png')}
           />
         </TouchableOpacity>
@@ -92,86 +94,4 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    backgroundColor: '#0C4CBE'
-  },
-  camera: {
-    flex: 0,
-    height: '80%',
-    width: '100%', 
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    padding: 20,
-    paddingTop: 44,
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  image: {
-    width: 50,
-    height: 50,
-  },
-  textContainer: {
-    width: '90%', 
-    height: 150,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    backgroundColor: '#96B4E8',
-    borderRadius: 30,
-    padding: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6.27,
-    elevation: 10, 
-    alignSelf: 'center',
-    marginTop: -15
-  },
-  text: {
-    flex: 1,
-    fontSize: 16,
-    color: '#000',
-    padding: 10,
-    fontFamily: 'AlbertSans-Medium'
-  },
-  speakerButton: {
-    position: 'absolute',
-    bottom: 10,
-    right: 10
-  },
-  anotherContainer: {
-    width: '90%',
-    backgroundColor: 'rgba(8, 48, 129, 0.7)',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    borderRadius: 30,
-    paddingBottom: 15,
-    alignSelf: 'center',
-    marginTop: -100,
-    marginBottom: 30,
-    height: 55,
-  },
-  translateContainer: {
-    width: '45%', 
-    height: 55,
-    borderRadius: 30,
-  },
-  circle: {
-    width: 35, 
-    height: 35,
-    marginTop: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: 15, 
-  },
-  imageswitch: { // Switch Way
-    marginTop: 5,
-    width: 35,
-    height: 25,
-  }
-});
+
