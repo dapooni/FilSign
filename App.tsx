@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Image, TextInput } from 'react-native';
+import { Text, View, Button, TouchableOpacity, Image, TextInput } from 'react-native';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRef } from 'react';
+import { useFonts } from 'expo-font';
 
 import SettingDropdown from './components/DropDown/Setting';
 import TranslateDropdown from './components/DropDown/Translate';
