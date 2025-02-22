@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Text, View, Button, TouchableOpacity, Image, TextInput } from 'react-native';
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
-import { useRef } from 'react';
 import { useFonts } from 'expo-font';
+import VideoPlayer from './components/VideoPlayer';
 
 import SettingDropdown from './components/DropDown/Setting';
 import TranslateDropdown from './components/DropDown/Translate';
@@ -16,6 +16,7 @@ export default function App() {
   const [selectedFrom, setSelectedFrom] = useState<string>('2'); // Default to "TEXT/SPEECH"
   const [fromValue, setFromValue] = useState('1'); // Default to 'FSL GESTURE'
   const [toValue, setToValue] = useState('2'); // Default to 'TEXT/SPEECH'
+  const [glossText, setGlossText] = useState(''); // State for storing the typed gloss
 
   const swapValues = () => {
     setFromValue(toValue);
@@ -79,8 +80,10 @@ export default function App() {
         <TextInput
           style={styles.text}
           editable={fromValue !== '1'} // Disable input when FSL GESTURE is selected
-          placeholder={fromValue !== '1' ? "Type here..." : ""}
+          placeholder={fromValue !== '1' ? "Type gloss here..." : ""}
           placeholderTextColor="#000"
+          value={glossText}
+          onChangeText={(text) => setGlossText(text)} // Update state when typing
         />
         
         {/* Speaker/Microphone */}
@@ -91,8 +94,9 @@ export default function App() {
           />
         </TouchableOpacity>
       </View>
+
+      {/* Video Player - Display video based on gloss input */}
+      {glossText !== '' && <VideoPlayer glossText={glossText} />}
     </View>
   );
 }
-
-
