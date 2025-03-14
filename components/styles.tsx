@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     mainContainer: {
       flex: 1,
       justifyContent: 'flex-start',
-      backgroundColor: '#0C4CBE'
+      backgroundColor: 'rgba(8, 48, 129, 0.9)'
     },
 
     /* Camera View */
@@ -38,7 +38,6 @@ export const styles = StyleSheet.create({
       flexDirection: 'row',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
-      backgroundColor: '#96B4E8',
       borderRadius: 30,
       padding: 15,
       shadowColor: '#000',

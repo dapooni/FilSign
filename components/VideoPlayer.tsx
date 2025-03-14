@@ -111,18 +111,52 @@ const VideoPlayer = ({ glossText }: { glossText: string }) => {
           </Modal>
         </>
       ) : (
-        <Text>No videos found for "{glossText}"</Text>
+        <Text style={styles.noteText}>No videos found for "{glossText}"</Text>
       )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', marginTop: 20 },
-  playText: { fontSize: 18, color: 'blue', textDecorationLine: 'underline' },
-  modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.8)' },
-  video: { width: '90%', height: '50%' },
-  closeText: { marginTop: 10, fontSize: 18, color: 'white', textDecorationLine: 'underline' },
+  container: { 
+    alignItems: 'center', 
+    marginTop: 20 
+  },
+
+  playText: { 
+    marginTop: -10,
+    fontSize: 14,
+    color: 'white',
+    fontFamily: 'Akatab-SemiBold', 
+    textDecorationLine: 'underline' 
+  },
+  
+  modalContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: 'rgba(0,0,0,0.8)' 
+  },
+
+  video: { 
+    width: '90%', 
+    height: '50%' 
+  },
+
+  closeText: { 
+    marginTop: 10, 
+    fontSize: 18, 
+    color: 'white', 
+    textDecorationLine: 'underline' 
+  },
+
+  noteText: {
+    marginTop: -10,
+    fontSize: 14,
+    color: 'white',
+    fontFamily: 'Akatab-SemiBold'
+  }
+
 });
 
 export default VideoPlayer;

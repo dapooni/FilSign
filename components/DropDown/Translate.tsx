@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { SelectCountry } from 'react-native-element-dropdown';
+import { StyleSheet, Text, View } from 'react-native';
+import { Dropdown } from 'react-native-element-dropdown';
 
 type TranslateDropdownProps = {
   selectedValue: string;
@@ -17,7 +17,7 @@ const Translate: React.FC<TranslateDropdownProps> = ({
   onSelect,
 }) => {
   return (
-    <SelectCountry
+    <Dropdown
       style={styles.dropdown}
       selectedTextStyle={styles.selectedTextStyle}
       placeholderStyle={styles.placeholderStyle}
@@ -28,10 +28,25 @@ const Translate: React.FC<TranslateDropdownProps> = ({
       data={local_data}
       valueField="value"
       labelField="label"
-      imageField="image"
       placeholder="SELECT"
+      activeColor="transparent"
       onChange={(item) => {
         onSelect(item.value);
+      }}
+      renderItem={(item) => {
+        const isSelected = item.value === selectedValue;
+        return (
+          <View style={styles.item}>
+            <Text
+              style={[
+                styles.itemTextStyle,
+                isSelected && styles.underlinedText,
+              ]}
+            >
+              {item.label}
+            </Text>
+          </View>
+        );
       }}
     />
   );
@@ -53,13 +68,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 8,
     color: 'white',
+    fontFamily: 'Akatab-SemiBold',
   },
   itemTextStyle: {
     fontSize: 14,
     color: 'white',
+    fontFamily: 'Akatab-SemiBold',
   },
   dropdownContainer: {
     backgroundColor: 'rgba(8, 48, 129, 0.7)',
     borderRadius: 10,
+  },
+  item: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  underlinedText: {
+    textDecorationLine: 'underline',
   },
 });
