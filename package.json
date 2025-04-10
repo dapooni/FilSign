@@ -4,21 +4,23 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
     "expo": "~52.0.25",
+    "expo-av": "~15.0.2",
     "expo-camera": "~16.0.11",
+    "expo-font": "~13.0.4",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "0.76.6",
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-element-dropdown": "^2.12.4",
-    "expo-font": "~13.0.4",
-    "expo-av": "~15.0.2",
-    "react-native-svg": "15.8.0"
+    "react-native-svg": "15.8.0",
+    "react-native-vision-camera": "^4.6.4",
+    "expo-system-ui": "~4.0.9"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

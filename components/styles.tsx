@@ -10,9 +10,9 @@ export const styles = StyleSheet.create({
 
     /* Camera View */
     camera: {
-      flex: 0,
-      height: '80%',
-      width: '100%', 
+      position: 'absolute', // Makes sure the camera covers the full screen, behind the other elements
+      width: '100%',        // Ensures the camera is stretched to full width
+      height: '95%',       // Ensures the camera is stretched to full height
     },
 
     /* Settings and Camera Button's Placement */
@@ -23,6 +23,9 @@ export const styles = StyleSheet.create({
       paddingTop: 44,
       justifyContent: 'space-between',
       alignItems: 'flex-start',
+      position: 'absolute',  // Positions the upper container above the camera
+      left: 0,
+      right: 0,
     },
 
     /* Camera Icon Button Size */
@@ -34,7 +37,7 @@ export const styles = StyleSheet.create({
     /* (1) Text Input/Output */
     textContainer: {
       width: '90%', 
-      height: 150,
+      height: 160,
       flexDirection: 'row',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
@@ -46,7 +49,8 @@ export const styles = StyleSheet.create({
       shadowRadius: 6.27,
       elevation: 10, 
       alignSelf: 'center',
-      marginTop: -15
+      marginTop: -15,
+      marginBottom: 30
     },
     text: {  // (2)
       flex: 1,
@@ -73,7 +77,7 @@ export const styles = StyleSheet.create({
       alignSelf: 'center',
       marginTop: -100,
       marginBottom: 30,
-      height: 55,
+      height: 50,
     },
     
     /* Two Container for TranslateDropDown */
@@ -95,5 +99,5 @@ export const styles = StyleSheet.create({
       marginTop: 5,
       width: 35,
       height: 25,
-    }
+    },
   });
