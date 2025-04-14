@@ -101,8 +101,19 @@ export default function Dropdown() {
                     }}>
                     <Text style={[styles.textButton, { color: isDarkMode ? '#FFF' : '#000' }]}>SKIP TUTORIAL</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.buttonNext} onPress={() => setTutorialStep(1)}>
-                    <Text style={styles.textNext}>NEXT</Text>
+                  <TouchableOpacity
+                    style={styles.buttonNext}
+                    onPress={() => {
+                      if (tutorialStep === 0) {
+                        setTutorialStep(1);
+                      } else {
+                        setModalVisible(false);
+                        setTutorialStep(0);
+                      }
+                    }}>
+                    <Text style={styles.textNext}>
+                      {tutorialStep === 0 ? 'NEXT' : 'DONE'}
+                    </Text>
                   </TouchableOpacity>
                 </View>
               </View>

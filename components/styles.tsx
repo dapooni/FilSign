@@ -10,9 +10,9 @@ export const styles = StyleSheet.create({
 
     /* Camera View */
     camera: {
-      position: 'absolute', // Makes sure the camera covers the full screen, behind the other elements
-      width: '100%',        // Ensures the camera is stretched to full width
-      height: '95%',       // Ensures the camera is stretched to full height
+      position: 'absolute', 
+      width: '100%',        
+      height: '95%',       
     },
 
     /* Settings and Camera Button's Placement */
@@ -20,10 +20,10 @@ export const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'row',
       padding: 20,
-      paddingTop: 44,
+      paddingTop: 25,
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      position: 'absolute',  // Positions the upper container above the camera
+      position: 'absolute',  
       left: 0,
       right: 0,
     },
@@ -49,8 +49,9 @@ export const styles = StyleSheet.create({
       shadowRadius: 6.27,
       elevation: 10, 
       alignSelf: 'center',
-      marginTop: -15,
-      marginBottom: 30
+      marginTop: -30,
+      marginBottom: 40,
+      paddingBottom: 30
     },
     text: {  // (2)
       flex: 1,
@@ -75,8 +76,8 @@ export const styles = StyleSheet.create({
       borderRadius: 30,
       paddingBottom: 15,
       alignSelf: 'center',
-      marginTop: -100,
-      marginBottom: 30,
+      marginTop: -110,
+      marginBottom: 40,
       height: 50,
     },
     

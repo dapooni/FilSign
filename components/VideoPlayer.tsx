@@ -120,7 +120,8 @@ const VideoPlayer = ({ glossText }: { glossText: string }) => {
 const styles = StyleSheet.create({
   container: { 
     alignItems: 'center', 
-    marginTop: 20 
+    marginTop: 5,
+    marginBottom: 10, 
   },
 
   playText: { 
