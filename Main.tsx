@@ -8,6 +8,7 @@ import CameraSetup from './components/CameraSetup';
 
 import { styles } from "./components/styles";
 import { useTheme } from "./components/ThemeContext";
+import { WebView } from 'react-native-webview';
 
 export default function App() {
   const { isDarkMode } = useTheme();
@@ -31,7 +32,18 @@ export default function App() {
   return (
     <View style={styles.mainContainer}>
       {/* Camera Setup */}
-      <CameraSetup />
+      {/* <CameraSetup /> */}
+      <WebView 
+        source={{ uri: 'https://reactnative.dev/'}}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: -1 // This puts it behind other elements
+          }}
+      />
 
       {/* Two-Way Communication Choices */}
       <View style={styles.transContainer}>

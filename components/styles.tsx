@@ -8,12 +8,12 @@ export const styles = StyleSheet.create({
       backgroundColor: 'rgba(8, 48, 129, 0.9)'
     },
 
-    /* Camera View */
-    camera: {
-      flex: 0,
-      height: '80%',
-      width: '100%', 
-    },
+    // /* Camera View */
+    // camera: {
+    //   flex: 0,
+    //   height: '80%',
+    //   width: '100%', 
+    // },
 
     /* Settings and Camera Button's Placement */
     upperButtons: {
@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
       shadowRadius: 6.27,
       elevation: 10, 
       alignSelf: 'center',
-      marginTop: -15
+      marginTop: -15,
     },
     text: {  // (2)
       flex: 1,
