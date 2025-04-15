@@ -8,6 +8,7 @@ import CameraSetup from './components/CameraSetup';
 
 import { styles } from "./components/styles";
 import { useTheme } from "./components/ThemeContext";
+import { WebView } from 'react-native-webview';
 
 export default function App() {
   const { isDarkMode } = useTheme();
@@ -31,7 +32,33 @@ export default function App() {
   return (
     <View style={styles.mainContainer}>
       {/* Camera Setup */}
-      <CameraSetup />
+      {/* <CameraSetup /> */}
+      <WebView 
+        source={{ uri: 'https://87f2-110-54-183-134.ngrok-free.app'}}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: -1 // This puts it behind other elements
+          }}
+          mediaPlaybackRequiresUserAction={false}
+          allowsInlineMediaPlayback={true}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          startInLoadingState={true}
+          allowFileAccess={true}
+          allowUniversalAccessFromFileURLs={true}
+          originWhitelist={['*']}
+          onShouldStartLoadWithRequest={() => true}
+          onError={(syntheticEvent) => {
+            console.log('WebView error: ', syntheticEvent.nativeEvent);
+          }}
+          onHttpError={(syntheticEvent) => {
+            console.log('WebView HTTP error: ', syntheticEvent.nativeEvent);
+          }}
+      />
 
       {/* Two-Way Communication Choices */}
       <View style={styles.transContainer}>
