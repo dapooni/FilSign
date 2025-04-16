@@ -13,7 +13,7 @@ import { WebView } from 'react-native-webview';
 // Define a constant for the placeholder text
 const WAITING_TEXT = "WAITING FOR SIGNS...";
 // Replace with your Flask server URL - use IP address instead of localhost
-const SERVER_URL = 'http://192.168.254.128:5000';
+const SERVER_URL = 'https://classic-proven-kingfish.ngrok-free.app/';
 
 // Define types for prediction data
 interface PredictionResult {
