@@ -35,7 +35,7 @@ export default function App() {
     <View style={styles.mainContainer}>
       {/* Camera Setup */}
       <CameraSetup />
-
+      
       {/* Two-Way Communication Choices */}
       <View style={styles.transContainer}>
         <View style={styles.transDropdown}>
