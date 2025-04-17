@@ -5,7 +5,6 @@ export const styles = StyleSheet.create({
     mainContainer: {
       flex: 1,
       justifyContent: 'flex-start',
-      backgroundColor: 'rgba(8, 48, 129, 0.9)'
     },
 
     // /* Camera View */
@@ -17,12 +16,17 @@ export const styles = StyleSheet.create({
 
     /* Settings and Camera Button's Placement */
     upperButtons: {
-      flex: 1,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       flexDirection: 'row',
       padding: 20,
       paddingTop: 44,
       justifyContent: 'space-between',
       alignItems: 'flex-start',
+      zIndex: 1
     },
 
     /* Camera Icon Button Size */
@@ -47,6 +51,8 @@ export const styles = StyleSheet.create({
       elevation: 10, 
       alignSelf: 'center',
       marginTop: -15,
+      zIndex: 1,
+      minHeight: 10
     },
     text: {  // (2)
       flex: 1,
@@ -74,6 +80,7 @@ export const styles = StyleSheet.create({
       marginTop: -100,
       marginBottom: 30,
       height: 55,
+      zIndex: 1
     },
     
     /* Two Container for TranslateDropDown */

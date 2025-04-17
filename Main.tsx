@@ -5,6 +5,7 @@ import VideoPlayer from './components/VideoPlayer';
 import io, { Socket } from 'socket.io-client';
 
 import TranslateDropdown from './components/DropDown/Translate';
+import SettingDropdown from './components/DropDown/Setting';
 
 import { styles } from "./components/styles";
 import { useTheme } from "./components/ThemeContext";
@@ -12,7 +13,7 @@ import { WebView } from 'react-native-webview';
 
 // Define a constant for the placeholder text
 const WAITING_TEXT = "WAITING FOR SIGNS...";
-// Replace with your Flask server URL - use IP address instead of localhost
+// Flask server URL
 const SERVER_URL = 'https://classic-proven-kingfish.ngrok-free.app/';
 
 // Define types for prediction data
@@ -183,6 +184,19 @@ export default function App() {
 
   return (
     <View style={styles.mainContainer}>
+      {/* Upper Buttons */}
+      <View style={styles.upperButtons}>
+        <SettingDropdown />
+        {/* Camera rotate - not working */}
+        <Image
+          style={styles.cameraIcon}
+          source={
+          isDarkMode
+          ? require('./assets/images/dark-camrotate.png')
+          : require('./assets/images/light-camrotate.png')
+          }
+        />
+      </View>
       {/* Connection status indicator - optional */}
       {fromValue === '1' && (
         <View style={{
@@ -275,6 +289,9 @@ export default function App() {
           placeholderTextColor={isDarkMode ? '#aaa' : '#000'}
           value={glossText}
           onChangeText={handleTextChange}
+          multiline={true}
+          numberOfLines={3}
+          scrollEnabled={true}
         />
         
         {/* Speaker/Microphone */}
