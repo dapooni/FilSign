@@ -7,19 +7,19 @@
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
-    "plugins": [
-      [
-        "expo-font",
-        {
-          "fonts": ["./assets/fonts/AlbertSans-Medium.ttf"]
-        }
-      ]
-    ]
+    "extra": {
+      "OPENAI_API_KEY": "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"
+    }
   }
 }

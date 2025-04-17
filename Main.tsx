@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, Image, TextInput } from 'react-native';
 import { useFonts } from 'expo-font';
 import VideoPlayer from './components/VideoPlayer';
+import SpeechToText from "./components/SpeechToText";
+import * as Speech from 'expo-speech';
+
 
 import TranslateDropdown from './components/DropDown/Translate';
 import CameraSetup from './components/CameraSetup';
@@ -80,24 +83,42 @@ export default function App() {
             />
         
         {/* Speaker/Microphone */}
-        <TouchableOpacity style={styles.speakerButton} onPress={() => setIsPressed((prevState) => !prevState)}>
-          <Image
-              style={styles.cameraIcon}
-              source={
-                fromValue === '1'
-                  ? (isPressed
-                      ? require('./assets/images/speaker-pressed.png')
-                      : require('./assets/images/speaker.png'))
-                  : (isPressed
-                      ? require('./assets/images/mic-pressed.png')
-                      : require('./assets/images/mic.png'))
+        <TouchableOpacity
+          style={styles.speakerButton}
+          onPress={() => {
+            if (fromValue === '1') {
+              // ✅ TEXT TO SPEECH
+              if (glossText.trim() !== '') {
+                Speech.speak(glossText, {
+                  language: 'en', // or 'fil' if you want to support Filipino
+                  pitch: 1.1,
+                  rate: 1.0,
+                });
               }
-            />
+            } else {
+              // 🎤 SPEECH TO TEXT (toggle listening)
+              setIsPressed(prev => !prev);
+            }
+          }}
+        >
+          <Image
+            style={styles.cameraIcon}
+            source={
+              fromValue === '1'
+                ? require('./assets/images/speaker.png')
+                : (isPressed
+                    ? require('./assets/images/mic-pressed.png')
+                    : require('./assets/images/mic.png'))
+            }
+          />
         </TouchableOpacity>
       </View>
 
       {/* Video Player - Display video based on gloss input */}
       {glossText !== '' && <VideoPlayer glossText={glossText} />}
+
+      {/* Speech-to-Text Component */}
+      <SpeechToText isListening={isPressed} onTranscription={setGlossText} />
     </View>
   );
 }
