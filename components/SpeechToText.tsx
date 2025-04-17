@@ -3,8 +3,7 @@ import { View, Text } from "react-native";
 import { Audio } from "expo-av";
 import Constants from 'expo-constants';
 
-const API_KEY = Constants.expoConfig?.extra?.OPENAI_API_KEY || "";
-console.log("My API Key:", API_KEY);
+const API_KEY = process.env.OPENAI_API_KEY;
 
 
 interface SpeechToTextProps {
