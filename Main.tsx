@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, TouchableOpacity, Image, TextInput, Text } from 'react-native';
 import { useFonts } from 'expo-font';
 import VideoPlayer from './components/VideoPlayer';
+import SpeechToText from "./components/SpeechToText";
+import * as Speech from 'expo-speech';
 import io, { Socket } from 'socket.io-client';
 
 import TranslateDropdown from './components/DropDown/Translate';
@@ -185,16 +187,16 @@ export default function App() {
   return (
     <View style={styles.mainContainer}>
       {/* Upper Buttons */}
-      <View style={styles.upperButtons}>
+      <View style={styles.upperButtons} pointerEvents="box-none">
         <SettingDropdown />
         {/* Camera rotate - not working */}
         <Image
-          style={styles.cameraIcon}
-          source={
-          isDarkMode
-          ? require('./assets/images/dark-camrotate.png')
-          : require('./assets/images/light-camrotate.png')
-          }
+           style={styles.cameraIcon}
+           source={
+           isDarkMode
+           ? require('./assets/images/dark-camrotate.png')
+           : require('./assets/images/light-camrotate.png')
+           }
         />
       </View>
       {/* Connection status indicator - optional */}
@@ -223,7 +225,7 @@ export default function App() {
           left: 0,
           right: 0,
           bottom: 0,
-          zIndex: -1 // This puts it behind other elements
+          zIndex: 1 // This puts it behind other elements
         }}
         mediaPlaybackRequiresUserAction={false}
         allowsInlineMediaPlayback={true}
@@ -295,25 +297,43 @@ export default function App() {
         />
         
         {/* Speaker/Microphone */}
-        <TouchableOpacity style={styles.speakerButton} onPress={handleButtonPress}>
-          <Image
-            style={styles.cameraIcon}
-            source={
-              fromValue === '1'
-                ? (isPressed
-                    ? require('./assets/images/speaker-pressed.png')
-                    : require('./assets/images/speaker.png'))
-                : (isPressed
-                    ? require('./assets/images/mic-pressed.png')
-                    : require('./assets/images/mic.png'))
-            }
-          />
+        <TouchableOpacity
+           style={styles.speakerButton}
+           onPress={() => {
+             if (fromValue === '1') {
+               // ✅ TEXT TO SPEECH
+               if (glossText.trim() !== '') {
+                 Speech.speak(glossText, {
+                   language: 'en', // or 'fil' if you want to support Filipino
+                   pitch: 1.1,
+                   rate: 1.0,
+                 });
+               }
+             } else {
+               // 🎤 SPEECH TO TEXT (toggle listening)
+               setIsPressed(prev => !prev);
+             }
+           }}
+         >
+           <Image
+             style={styles.cameraIcon}
+             source={
+               fromValue === '1'
+                 ? require('./assets/images/speaker.png')
+                 : (isPressed
+                     ? require('./assets/images/mic-pressed.png')
+                     : require('./assets/images/mic.png'))
+             }
+           />
         </TouchableOpacity>
       </View>
 
-      {/* Video Player - Only show when there's meaningful content */}
-      {glossText !== '' && glossText !== WAITING_TEXT && 
-        <VideoPlayer glossText={glossText} />}
+      {/* Video Player - Display video based on gloss input */}
+      {glossText !== '' && <VideoPlayer glossText={glossText} />}
+      
+      {/* Speech-to-Text Component */}
+      <SpeechToText isListening={isPressed} onTranscription={setGlossText} />
+
     </View>
   );
 }
