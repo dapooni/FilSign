@@ -7,11 +7,20 @@
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.CAMERA"
+      ],
       "package": "com.anonymous.FilSign"
     },
     "plugins": [
@@ -24,9 +33,6 @@
         }
       ]
     ],
-    "extra": {
-      "OPENAI_API_KEY": "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"
-    },
     "ios": {
       "bundleIdentifier": "com.anonymous.FilSign"
     }

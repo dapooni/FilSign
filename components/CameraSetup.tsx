@@ -1,48 +1,58 @@
-import React, { useState, useRef } from 'react';
-import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
-import { Text, View, Button, TouchableOpacity, Image} from 'react-native';
-import { styles } from "./styles";
-import SettingDropdown from './DropDown/Setting';
+import React, { useEffect, useState } from 'react';
+import { useCameraPermission, useCameraDevice, Camera } from 'react-native-vision-camera';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
+import { styles } from './styles';
 import { useTheme } from './ThemeContext';
+import SettingDropdown from './DropDown/Setting';
+
 
 export default function App() {
-    const [facing, setFacing] = useState<CameraType>('front');
-    const [permission, requestPermission] = useCameraPermissions();
-    const cameraRef = useRef<CameraView | null>(null);
-    const { isDarkMode } = useTheme();
+  const { isDarkMode } = useTheme();
+  const [isFrontCamera, setIsFrontCamera] = useState(true);
+  const frontDevice = useCameraDevice('front');
+  const backDevice = useCameraDevice('back');
 
-    if (!permission) {
-        return <View />;
-    }
-    
-    if (!permission.granted) {
-        return (
-          <View style={styles.mainContainer}>
-            <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-            <Button onPress={requestPermission} title="Grant Permission" />
-          </View>
-        );
-    }
-    
-    function toggleCameraFacing() {
-        setFacing(current => (current === 'front' ? 'back' : 'front'));
-    }
+  const { hasPermission, requestPermission } = useCameraPermission();
 
-    return(
-        <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-            <View style={styles.upperButtons}>
-            <SettingDropdown />
-            <TouchableOpacity onPress={toggleCameraFacing}>
-            <Image
-                style={styles.cameraIcon}
-                source={
-                isDarkMode
-                    ? require('../assets/images/dark-camrotate.png')
-                    : require('../assets/images/light-camrotate.png')
-                }
-            />
-            </TouchableOpacity>
-            </View>
-        </CameraView>
-    );
+  useEffect(() => {
+    if (!hasPermission) {
+      requestPermission();
+    }
+  }, [hasPermission]);
+
+  console.log('has permissions: ', hasPermission);
+
+  if (!hasPermission) {
+    return <View />; // No camera permission
+  }
+
+  // Fallback if no camera device is found
+  const device = isFrontCamera ? frontDevice : backDevice;
+
+  if (!device) {
+    return <Text>Camera device not found</Text>;
+  }
+  
+  const toggleCamera = () => {
+    setIsFrontCamera(!isFrontCamera);
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Camera device={device} isActive={true} style={styles.camera}></Camera>
+      <View style={styles.upperButtons}>
+        <SettingDropdown />
+        <TouchableOpacity onPress={toggleCamera}>
+          <Image
+            style={styles.cameraIcon}
+            source={
+              isDarkMode
+                ? require('../assets/images/dark-camrotate.png')
+                : require('../assets/images/light-camrotate.png')
+            }
+          />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 }
