@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
       bottom: 0,
       flexDirection: 'row',
       padding: 20,
-      paddingTop: 25,
+      paddingTop: 44,
       justifyContent: 'space-between',
       alignItems: 'flex-start',
       zIndex: 1
@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
     /* (1) Text Input/Output */
     textContainer: {
       width: '90%', 
-      height: 160,
+      height: 150,
       flexDirection: 'row',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
@@ -102,5 +102,5 @@ export const styles = StyleSheet.create({
       marginTop: 5,
       width: 35,
       height: 25,
-    },
+    }
   });

@@ -190,14 +190,14 @@ export default function App() {
       <View style={styles.upperButtons} pointerEvents="box-none">
         <SettingDropdown />
         {/* Camera rotate - not working */}
-        <Image
+        {/* <Image
            style={styles.cameraIcon}
            source={
            isDarkMode
            ? require('./assets/images/dark-camrotate.png')
            : require('./assets/images/light-camrotate.png')
            }
-        />
+        /> */}
       </View>
       {/* Connection status indicator - optional */}
       {fromValue === '1' && (
