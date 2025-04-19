@@ -5,27 +5,28 @@ export const styles = StyleSheet.create({
     mainContainer: {
       flex: 1,
       justifyContent: 'flex-start',
-      backgroundColor: 'rgba(8, 48, 129, 0.9)'
     },
 
-    /* Camera View */
-    camera: {
-      position: 'absolute', 
-      width: '100%',        
-      height: '95%',       
-    },
+    // /* Camera View */
+    // camera: {
+    //   flex: 0,
+    //   height: '80%',
+    //   width: '100%', 
+    // },
 
     /* Settings and Camera Button's Placement */
     upperButtons: {
-      flex: 1,
-      flexDirection: 'row',
-      padding: 20,
-      paddingTop: 25,
-      justifyContent: 'space-between',
-      alignItems: 'flex-start',
-      position: 'absolute',  
+      position: 'absolute',
+      top: 0,
       left: 0,
       right: 0,
+      bottom: 0,
+      flexDirection: 'row',
+      padding: 20,
+      paddingTop: 44,
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      zIndex: 1
     },
 
     /* Camera Icon Button Size */
@@ -37,7 +38,7 @@ export const styles = StyleSheet.create({
     /* (1) Text Input/Output */
     textContainer: {
       width: '90%', 
-      height: 160,
+      height: 150,
       flexDirection: 'row',
       alignItems: 'flex-start',
       justifyContent: 'space-between',
@@ -49,9 +50,9 @@ export const styles = StyleSheet.create({
       shadowRadius: 6.27,
       elevation: 10, 
       alignSelf: 'center',
-      marginTop: -30,
-      marginBottom: 40,
-      paddingBottom: 30
+      marginTop: -15,
+      zIndex: 1,
+      minHeight: 10
     },
     text: {  // (2)
       flex: 1,
@@ -76,9 +77,10 @@ export const styles = StyleSheet.create({
       borderRadius: 30,
       paddingBottom: 15,
       alignSelf: 'center',
-      marginTop: -110,
-      marginBottom: 40,
-      height: 50,
+      marginTop: -100,
+      marginBottom: 30,
+      height: 55,
+      zIndex: 1
     },
     
     /* Two Container for TranslateDropDown */
@@ -100,5 +102,5 @@ export const styles = StyleSheet.create({
       marginTop: 5,
       width: 35,
       height: 25,
-    },
+    }
   });

@@ -31,8 +31,10 @@
             "./assets/fonts/AlbertSans-Medium.ttf"
           ]
         }
-      ],
-      "react-native-vision-camera"
-    ]
+      ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.anonymous.FilSign"
+    }
   }
 }
