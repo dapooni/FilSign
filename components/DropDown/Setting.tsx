@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 53,
+    height: 53,
   },
   settingIcon: {
-    width: 43,
-    height: 43,
+    width: 45,
+    height: 45,
     marginLeft: 5
   },
   modalContainer: {
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   exitContainer:{
     flexDirection: "row",
-    justifyContent: "flex-end", // Moves the button to the right
+    justifyContent: "flex-end",
     padding: 5,
     marginBottom: -30
   },
@@ -187,19 +187,19 @@ const styles = StyleSheet.create({
     marginTop: -10
   },
   buttonSkip: {
-    paddingVertical: 20, // Extra padding
+    paddingVertical: 20, 
     paddingHorizontal: 20,
     borderRadius: 20,
   },
   buttonNext: {
     marginRight: 10,
-    backgroundColor: "#CE1126", // Red color for NEXT button
-    paddingVertical: 20, // Extra padding
+    backgroundColor: "#CE1126", 
+    paddingVertical: 20, 
     paddingHorizontal: 45,
     borderRadius: 15,
   },
   textNext:{
-    color: "#FFFFFF", // White text
+    color: "#FFFFFF", 
     fontSize: 15,
     textAlign: "center",
     fontFamily: 'AlbertSans-Medium',

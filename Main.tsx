@@ -54,7 +54,8 @@ export default function App() {
   const [recognizedSigns, setRecognizedSigns] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
   const [isSwitchingCamera, setIsSwitchingCamera] = useState(false);
-  
+  const [isEyeOn, setIsEyeOn] = useState(false);
+
   const [fontsLoaded] = useFonts({
     'AlbertSans-Medium': require('./assets/fonts/AlbertSans-Medium.ttf'),
     'Akatab-SemiBold': require('./assets/fonts/Akatab-SemiBold.ttf')
@@ -220,42 +221,60 @@ export default function App() {
     return null; // or a loading screen
   }
 
+  const handleEyeToggle = () => {
+    setIsEyeOn(prev => !prev);
+  };
+  
+
   return (
     <View style={styles.mainContainer}>
       {/* Upper Buttons */}
       <View style={styles.upperButtons} pointerEvents="box-none">
         <SettingDropdown />
-        <TouchableOpacity 
-          onPress={handleCameraSwitch}
-          disabled={isSwitchingCamera}
-        >
-          <Image
-            style={[
-              styles.cameraIcon,
-              isSwitchingCamera && { opacity: 0.5 } // Visual feedback when switching
-            ]}
-            source={
-              isDarkMode
-              ? require('./assets/images/dark-camrotate.png')
-              : require('./assets/images/light-camrotate.png')
-            }
-          /> 
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={handleCameraSwitch}
-        >
-          <Image
-            style={[
-              styles.cameraIcon,
-              isSwitchingCamera && { opacity: 0.5 } // Visual feedback when switching
-            ]}
-            source={
-              isDarkMode
-              ? require('./assets/images/dark-camrotate.png')
-              : require('./assets/images/light-camrotate.png')
-            }
-          /> 
-        </TouchableOpacity>
+        <View style={styles.rightButtons}>
+          {/* Camera Switch */}
+          <TouchableOpacity onPress={handleCameraSwitch}>
+            <Image
+              style={[
+                styles.cameraIcon,
+                isSwitchingCamera && { opacity: 0.5 } // Visual feedback when switching
+              ]}
+              source={
+                isDarkMode
+                ? require('./assets/images/dark-camrotate.png')
+                : require('./assets/images/light-camrotate.png')
+              }
+            /> 
+          </TouchableOpacity>
+          {/* Landmarks */}
+          <TouchableOpacity onPress={handleEyeToggle}>
+            <Image
+              style={styles.eyeIcon}
+              source={
+                isDarkMode
+                  ? isEyeOn
+                    ? require('./assets/images/dark-eye-icon.png')
+                    : require('./assets/images/dark-eye-off-icon.png')
+                  : isEyeOn
+                    ? require('./assets/images/light-eye-on-icon.png')
+                    : require('./assets/images/light-eye-off-icon.png')
+              }
+            />
+          </TouchableOpacity>
+          {/* Clear Text Outputs */}
+          <TouchableOpacity style={{ marginTop: 6 }}>
+            <Image
+              style={[
+                styles.restartIcon,
+              ]}
+              source={
+                isDarkMode
+                ? require('./assets/images/dark-restart-icon.png')
+                : require('./assets/images/light-restart-icon.png')
+              }
+            /> 
+          </TouchableOpacity>
+        </View>
       </View>
       
       {/* Connection status indicator - optional */}
@@ -279,14 +298,7 @@ export default function App() {
       <WebView 
         ref={webViewRef}
         source={{ uri: SERVER_URL }}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,  
-          bottom: 0,
-          zIndex: 1 // This puts it behind other elements
-        }}
+        style={styles.cameraView}
         mediaPlaybackRequiresUserAction={false}
         allowsInlineMediaPlayback={true}
         javaScriptEnabled={true}
@@ -299,14 +311,14 @@ export default function App() {
         onError={(syntheticEvent) => {
           console.log('WebView error: ', syntheticEvent.nativeEvent);
         }}
-        onHttpError={(syntheticEvent) => {
+          onHttpError={(syntheticEvent) => {
           console.log('WebView HTTP error: ', syntheticEvent.nativeEvent);
         }}
         onMessage={(event) => {
           // Optional: Handle messages from web app
           console.log('Message from WebView:', event.nativeEvent.data);
         }}
-      />
+       />
 
       {/* Two-Way Communication Choices */}
       <View style={styles.transContainer}>
@@ -332,16 +344,13 @@ export default function App() {
       </View>
 
       {/* Text Input/Output Container */}
-      <View
-        style={[
-          styles.textContainer,
-          {
-            backgroundColor: isDarkMode ? '#1e1e1e' : '#96B4E8',
-            borderWidth: isDarkMode ? 1 : 1,             
-            borderColor: isDarkMode ? 'gray' : 'white', 
-          },
-        ]}
-      >
+      <View style={[ styles.textContainer,
+        {
+          backgroundColor: isDarkMode ? '#1e1e1e' : '#96B4E8',
+          borderWidth: isDarkMode ? 1 : 1,             
+          borderColor: isDarkMode ? 'gray' : 'white', 
+        },
+      ]}>
         <TextInput
           style={[
             styles.text,
@@ -359,42 +368,44 @@ export default function App() {
           numberOfLines={3}
           scrollEnabled={true}
         />
-        
-        {/* Speaker/Microphone */}
+  
+        {/* Speaker/Microphone Button */}
         <TouchableOpacity
-           style={styles.speakerButton}
-           onPress={() => {
-             if (fromValue === '1') {
-               // ✅ TEXT TO SPEECH
-               if (glossText.trim() !== '') {
-                 Speech.speak(glossText, {
-                   language: 'en', // or 'fil' if you want to support Filipino
-                   pitch: 1.1,
-                   rate: 1.0,
-                 });
-               }
-             } else {
-               // 🎤 SPEECH TO TEXT (toggle listening)
-               setIsPressed(prev => !prev);
-             }
-           }}
-         >
-           <Image
-             style={styles.cameraIcon}
-             source={
-               fromValue === '1'
-                 ? require('./assets/images/speaker.png')
-                 : (isPressed
-                     ? require('./assets/images/mic-pressed.png')
-                     : require('./assets/images/mic.png'))
-             }
-           />
+          style={styles.speakerButton}
+          onPress={() => {
+            if (fromValue === '1') {
+              // ✅ TEXT TO SPEECH
+              if (glossText.trim() !== '') {
+                Speech.speak(glossText, {
+                  language: 'en', // or 'fil'
+                  pitch: 1.1,
+                  rate: 1.0,
+                });
+              }
+            } else {
+              // 🎤 SPEECH TO TEXT or ▶️ Play
+              setIsPressed(prev => !prev);
+            }
+          }}
+        >
+        <Image
+          style={styles.buttonIcon}
+          source={
+            fromValue === '1'
+              ? require('./assets/images/speaker.png')
+              : (isPressed
+                ? require('./assets/images/mic-pressed.png')       // Mic pressed
+                : require('./assets/images/mic.png'))              // Mic idle
+          }
+        />
         </TouchableOpacity>
+
+        {/* Video Player - Display video based on gloss input */}
+        {fromValue === '2' && glossText !== '' && (
+          <VideoPlayer glossText={glossText} />
+        )}
       </View>
 
-      {/* Video Player - Display video based on gloss input */}
-      {glossText !== '' && <VideoPlayer glossText={glossText} />}
-      
       {/* Speech-to-Text Component */}
       <SpeechToText isListening={isPressed} onTranscription={setGlossText} />
 

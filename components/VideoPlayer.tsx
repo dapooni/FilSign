@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity, Modal, Image } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import glossDictionary from '../constants/glossDictionary';
 import { filipinoToEnglish } from '../constants/filipinoToEnglish';
-
 
 const ignoredWords = new Set(["THE", "IS", "A", "AN", "OF", "AND", "TO"]);
 const numberToGloss: Record<string, string> = {
@@ -18,6 +17,7 @@ const VideoPlayer = ({ glossText = "" }: { glossText?: string }) => {
   const [currentIndex, setCurrentIndex] = useState(0); // Keeps track of the current video index
   const [videosPreloaded, setVideosPreloaded] = useState(false); // Tracks if all videos are preloaded
   const videoRef = useRef<Video>(null); // Ref for accessing the Video component
+  const [isPressed, setIsPressed] = useState(false);
 
   // useEffect hook to process the glossText and find corresponding videos
   useEffect(() => {
@@ -128,8 +128,18 @@ const VideoPlayer = ({ glossText = "" }: { glossText?: string }) => {
     <View style={styles.container}>
       {videoUris.length > 0 ? (
         <>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Text style={styles.playText}>Play Video</Text>
+          <TouchableOpacity
+            style={styles.playButton}
+            onPress={() => setModalVisible(true)} // same logic
+          >
+            <Image
+              style={styles.buttonIcon}
+              source={
+                isPressed
+                  ? require('../assets/images/play-pressed-icon.png')
+                  : require('../assets/images/play-icon.png')
+              }
+            />
           </TouchableOpacity>
           <Modal
             animationType="slide"
@@ -205,7 +215,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white',
     fontFamily: 'Akatab-SemiBold'
-  }
+  },
+
+  playButton: { 
+    position: 'absolute',
+    bottom: -65,
+    right: -5,
+  },
+
+  buttonIcon:{
+    width: 45,
+    height: 45,
+  },
 
 });
 

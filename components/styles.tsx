@@ -1,18 +1,25 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+const { height: screenHeight, width: screenWidth } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
     /* Main Screen */
     mainContainer: {
       flex: 1,
-      justifyContent: 'flex-start',
+      backgroundColor: 'transparent'
     },
 
-    // /* Camera View */
-    // camera: {
-    //   flex: 0,
-    //   height: '80%',
-    //   width: '100%', 
-    // },
+    /* Camera View */
+    cameraView: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,  
+      bottom: 0,
+      zIndex: 0, // This puts it behind other elements 
+      flex: 1,
+      width: screenWidth,
+      height: screenHeight,
+    },
 
     /* Settings and Camera Button's Placement */
     upperButtons: {
@@ -22,22 +29,46 @@ export const styles = StyleSheet.create({
       right: 0,
       bottom: 0,
       flexDirection: 'row',
-      padding: 20,
-      paddingTop: 44,
+      padding: 16,
+      paddingTop: 40,
       justifyContent: 'space-between',
       alignItems: 'flex-start',
       zIndex: 1
     },
 
-    /* Camera Icon Button Size */
+    rightButtons: {
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 2,
+    },
+
+    /* Icon Button Size */
     cameraIcon: {
-      width: 50,
-      height: 50,
+      width: 53,
+      height: 53,
+    },
+
+    eyeIcon: {
+      width: 45,
+      height: 45,
+    },
+
+    restartIcon: {
+      width: 45,
+      height: 45,
+    },
+
+    buttonIcon:{
+      width: 45,
+      height: 45,
     },
 
     /* (1) Text Input/Output */
     textContainer: {
-      width: '90%', 
+      position: 'absolute',
+      bottom: 40, // adjust to desired spacing from bottom
+      left: '5%',
+      right: '5%',
       height: 150,
       flexDirection: 'row',
       alignItems: 'flex-start',
@@ -48,12 +79,10 @@ export const styles = StyleSheet.create({
       shadowOffset: { width: 0, height: 5 },
       shadowOpacity: 0.2,
       shadowRadius: 6.27,
-      elevation: 10, 
-      alignSelf: 'center',
-      marginTop: -15,
+      elevation: 10,
       zIndex: 1,
-      minHeight: 10
     },
+    
     text: {  // (2)
       flex: 1,
       fontSize: 16,
@@ -66,21 +95,27 @@ export const styles = StyleSheet.create({
       bottom: 10,
       right: 10
     },
+    micButton:{
+      position: 'absolute',
+      bottom: 50,
+      right: 10
+    },
 
     /* Translate Container */
     transContainer: {
-      width: '90%',
+      position: 'absolute',
+      bottom: 200, // adjust as needed for spacing from top (below status bar/buttons)
+      left: '5%',
+      right: '5%',
       backgroundColor: 'rgba(8, 48, 129, 0.7)',
       justifyContent: 'space-between',
-      alignItems: 'flex-start',
+      alignItems: 'center',
       flexDirection: 'row',
       borderRadius: 30,
-      paddingBottom: 15,
-      alignSelf: 'center',
-      marginTop: -100,
-      marginBottom: 30,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
       height: 55,
-      zIndex: 1
+      zIndex: 2
     },
     
     /* Two Container for TranslateDropDown */
@@ -94,7 +129,6 @@ export const styles = StyleSheet.create({
     circle: {
       width: 35, 
       height: 35,
-      marginTop: 10,
       backgroundColor: 'rgba(255, 255, 255, 0.3)',
       borderRadius: 15, 
     },
