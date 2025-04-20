@@ -5,13 +5,13 @@ import VideoPlayer from './components/VideoPlayer';
 import SpeechToText from "./components/SpeechToText";
 import * as Speech from 'expo-speech';
 import io, { Socket } from 'socket.io-client';
+import { WebView } from 'react-native-webview';
 
 import TranslateDropdown from './components/DropDown/Translate';
 import SettingDropdown from './components/DropDown/Setting';
 
 import { styles } from "./components/styles";
 import { useTheme } from "./components/ThemeContext";
-import { WebView } from 'react-native-webview';
 
 // Define a constant for the placeholder text
 const WAITING_TEXT = "WAITING FOR SIGNS...";
@@ -41,6 +41,11 @@ const formatDisplayText = (text: string): string => {
 };
 
 export default function App() {
+  // Define all refs at the top of your component
+  const socketRef = useRef<Socket | null>(null);
+  const webViewRef = useRef<WebView>(null);
+  
+  // Then all state variables
   const { isDarkMode } = useTheme();
   const [isPressed, setIsPressed] = useState(false);
   const [fromValue, setFromValue] = useState('1'); // Default to 'FSL GESTURE'
@@ -48,9 +53,7 @@ export default function App() {
   const [glossText, setGlossText] = useState(WAITING_TEXT); // Initial state with waiting text
   const [recognizedSigns, setRecognizedSigns] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
-  
-  // Properly type the socket reference
-  const socketRef = useRef<Socket | null>(null);
+  const [isSwitchingCamera, setIsSwitchingCamera] = useState(false);
   
   const [fontsLoaded] = useFonts({
     'AlbertSans-Medium': require('./assets/fonts/AlbertSans-Medium.ttf'),
@@ -146,10 +149,6 @@ export default function App() {
     }
   };
 
-  if (!fontsLoaded) {
-    return null; // or a loading screen
-  }
-
   const swapValues = () => {
     const newFromValue = toValue;
     const newToValue = fromValue;
@@ -183,22 +182,82 @@ export default function App() {
     }
     // Add speech-to-text functionality here for the other mode
   };
+  
+  // Camera switch handler with debounce to prevent multiple rapid clicks
+  const handleCameraSwitch = () => {
+    if (webViewRef.current && !isSwitchingCamera) {
+      setIsSwitchingCamera(true);
+      console.log('Injecting JavaScript to switch camera...');
+      
+      const jsCode = `
+        try {
+          console.log('Finding camera button...');
+          const cameraBtn = document.getElementById('toggle-camera-btn');
+          if (cameraBtn) {
+            console.log('Camera button found, clicking...');
+            cameraBtn.click();
+          } else {
+            console.log('Camera button not found');
+          }
+        } catch(e) {
+          console.log('Error clicking camera button:', e);
+        }
+        true; // This is required for iOS
+      `;
+      
+      webViewRef.current.injectJavaScript(jsCode);
+      
+      // Reset switching flag after a delay
+      setTimeout(() => {
+        setIsSwitchingCamera(false);
+      }, 2000);
+    } else {
+      console.log('WebView reference not available or already switching');
+    }
+  };
+
+  if (!fontsLoaded) {
+    return null; // or a loading screen
+  }
 
   return (
     <View style={styles.mainContainer}>
       {/* Upper Buttons */}
       <View style={styles.upperButtons} pointerEvents="box-none">
         <SettingDropdown />
-        {/* Camera rotate - not working */}
-        {/* <Image
-           style={styles.cameraIcon}
-           source={
-           isDarkMode
-           ? require('./assets/images/dark-camrotate.png')
-           : require('./assets/images/light-camrotate.png')
-           }
-        /> */}
+        <TouchableOpacity 
+          onPress={handleCameraSwitch}
+          disabled={isSwitchingCamera}
+        >
+          <Image
+            style={[
+              styles.cameraIcon,
+              isSwitchingCamera && { opacity: 0.5 } // Visual feedback when switching
+            ]}
+            source={
+              isDarkMode
+              ? require('./assets/images/dark-camrotate.png')
+              : require('./assets/images/light-camrotate.png')
+            }
+          /> 
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={handleCameraSwitch}
+        >
+          <Image
+            style={[
+              styles.cameraIcon,
+              isSwitchingCamera && { opacity: 0.5 } // Visual feedback when switching
+            ]}
+            source={
+              isDarkMode
+              ? require('./assets/images/dark-camrotate.png')
+              : require('./assets/images/light-camrotate.png')
+            }
+          /> 
+        </TouchableOpacity>
       </View>
+      
       {/* Connection status indicator - optional */}
       {fromValue === '1' && (
         <View style={{
@@ -218,12 +277,13 @@ export default function App() {
       
       {/* WebView for camera interface */}
       <WebView 
-        source={{ uri: 'https://classic-proven-kingfish.ngrok-free.app/'}}
+        ref={webViewRef}
+        source={{ uri: SERVER_URL }}
         style={{
           position: 'absolute',
           top: 0,
           left: 0,
-          right: 0,
+          right: 0,  
           bottom: 0,
           zIndex: 1 // This puts it behind other elements
         }}
@@ -241,6 +301,10 @@ export default function App() {
         }}
         onHttpError={(syntheticEvent) => {
           console.log('WebView HTTP error: ', syntheticEvent.nativeEvent);
+        }}
+        onMessage={(event) => {
+          // Optional: Handle messages from web app
+          console.log('Message from WebView:', event.nativeEvent.data);
         }}
       />
 
