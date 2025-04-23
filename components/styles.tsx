@@ -40,6 +40,8 @@ export const styles = StyleSheet.create({
       flexDirection: 'column',
       alignItems: 'center',
       gap: 2,
+      top: 104,
+      right: 10
     },
 
     /* Icon Button Size */

@@ -61,6 +61,100 @@ export default function App() {
     'Akatab-SemiBold': require('./assets/fonts/Akatab-SemiBold.ttf')
   });
 
+  useEffect(() => {
+    if (webViewRef.current) {
+      const themeScript = `
+        (function() {
+          // Create or update CSS variables for theming
+          let style = document.getElementById('react-native-theme');
+          if (!style) {
+            style = document.createElement('style');
+            style.id = 'react-native-theme';
+            document.head.appendChild(style);
+          }
+          
+          // Set the theme variables based on isDarkMode
+          if (${isDarkMode}) {
+            document.body.classList.add('dark-theme');
+            document.body.classList.remove('light-theme');
+            style.textContent = \`
+              :root {
+                --background-color: #1e1e1e;
+                --text-color: #ffffff;
+                --button-bg: #333333;
+                --button-text: #ffffff;
+                --border-color: #444444;
+                --icon-color: #71A1FF;
+              }
+              svg path {
+                stroke: #71A1FF !important;
+              }
+            \`;
+              // Direct DOM manipulation for SVG elements
+              const cameraBtnSVG = document.querySelector('#toggle-camera-btn svg');
+              if (cameraBtnSVG) {
+                const paths = cameraBtnSVG.querySelectorAll('path');
+                paths.forEach(path => {
+                  path.setAttribute('stroke', '#71A1FF');
+                });
+              }
+              
+              // Apply to other SVG elements
+              document.querySelectorAll('svg path[stroke="#0038A8"]').forEach(path => {
+                path.setAttribute('stroke', '#71A1FF');
+              });
+          } else {
+            document.body.classList.add('light-theme');
+            document.body.classList.remove('dark-theme');
+            style.textContent = \`
+              :root {
+                --background-color: #ffffff;
+                --text-color: #000000;
+                --button-bg: #f0f0f0;
+                --button-text: #000000;
+                --border-color: #cccccc;
+                --icon-color: #0038A8;
+              }
+                     
+              svg path {
+                stroke: #0038A8 !important;
+              }
+            \`;
+
+          // Direct DOM manipulation for SVG elements
+          const cameraBtnSVG = document.querySelector('svg');
+          if (cameraBtnSVG) {
+            const paths = cameraBtnSVG.querySelectorAll('path');
+            paths.forEach(path => {
+              path.setAttribute('stroke', '#0038A8');
+            });
+          }
+          
+          // Reset other SVG elements
+          document.querySelectorAll('svg path[stroke="#71A1FF"]').forEach(path => {
+            path.setAttribute('stroke', '#0038A8');
+          });
+          }
+          
+          // Apply the theme to body and specific elements
+          document.body.style.backgroundColor = 'var(--background-color)';
+          document.body.style.color = 'var(--text-color)';
+          
+          // Apply to specific elements that need consistent styling
+          document.querySelectorAll('button, .btn').forEach(btn => {
+            btn.style.backgroundColor = 'var(--button-bg)';
+            btn.style.color = 'var(--button-text)';
+          });
+          
+          // Return true for iOS
+          true;
+        })();
+      `;
+      
+      webViewRef.current.injectJavaScript(themeScript);
+    }
+  }, [isDarkMode]); // Re-run when theme changes
+
   // Connect to Socket.IO server when in FSL mode
   useEffect(() => {
     // Only establish connection when in FSL GESTURE mode
@@ -130,7 +224,7 @@ export default function App() {
 
   // Handle prediction data received from server
   const handlePredictionResult = (data: PredictionResult) => {
-    if (data.prediction && data.confidence > 0.5) {
+    if (data.prediction && data.confidence > 0.7) {
       // Add to recognized signs if it's a new word (not the last one)
       setRecognizedSigns(prev => {
         // Only add if it's different from the last sign
@@ -183,39 +277,6 @@ export default function App() {
     }
     // Add speech-to-text functionality here for the other mode
   };
-  
-  // Camera switch handler with debounce to prevent multiple rapid clicks
-  const handleCameraSwitch = () => {
-    if (webViewRef.current && !isSwitchingCamera) {
-      setIsSwitchingCamera(true);
-      console.log('Injecting JavaScript to switch camera...');
-      
-      const jsCode = `
-        try {
-          console.log('Finding camera button...');
-          const cameraBtn = document.getElementById('toggle-camera-btn');
-          if (cameraBtn) {
-            console.log('Camera button found, clicking...');
-            cameraBtn.click();
-          } else {
-            console.log('Camera button not found');
-          }
-        } catch(e) {
-          console.log('Error clicking camera button:', e);
-        }
-        true; // This is required for iOS
-      `;
-      
-      webViewRef.current.injectJavaScript(jsCode);
-      
-      // Reset switching flag after a delay
-      setTimeout(() => {
-        setIsSwitchingCamera(false);
-      }, 2000);
-    } else {
-      console.log('WebView reference not available or already switching');
-    }
-  };
 
   if (!fontsLoaded) {
     return null; // or a loading screen
@@ -224,7 +285,6 @@ export default function App() {
   const handleEyeToggle = () => {
     setIsEyeOn(prev => !prev);
   };
-  
 
   return (
     <View style={styles.mainContainer}>
@@ -232,37 +292,8 @@ export default function App() {
       <View style={styles.upperButtons} pointerEvents="box-none">
         <SettingDropdown />
         <View style={styles.rightButtons}>
-          {/* Camera Switch */}
-          <TouchableOpacity onPress={handleCameraSwitch}>
-            <Image
-              style={[
-                styles.cameraIcon,
-                isSwitchingCamera && { opacity: 0.5 } // Visual feedback when switching
-              ]}
-              source={
-                isDarkMode
-                ? require('./assets/images/dark-camrotate.png')
-                : require('./assets/images/light-camrotate.png')
-              }
-            /> 
-          </TouchableOpacity>
-          {/* Landmarks */}
-          <TouchableOpacity onPress={handleEyeToggle}>
-            <Image
-              style={styles.eyeIcon}
-              source={
-                isDarkMode
-                  ? isEyeOn
-                    ? require('./assets/images/dark-eye-icon.png')
-                    : require('./assets/images/dark-eye-off-icon.png')
-                  : isEyeOn
-                    ? require('./assets/images/light-eye-on-icon.png')
-                    : require('./assets/images/light-eye-off-icon.png')
-              }
-            />
-          </TouchableOpacity>
           {/* Clear Text Outputs */}
-          <TouchableOpacity style={{ marginTop: 6 }}>
+          <TouchableOpacity style={{ marginTop: 6 }} onPress={clearSigns}>
             <Image
               style={[
                 styles.restartIcon,
@@ -346,7 +377,7 @@ export default function App() {
       {/* Text Input/Output Container */}
       <View style={[ styles.textContainer,
         {
-          backgroundColor: isDarkMode ? '#1e1e1e' : '#96B4E8',
+          backgroundColor: isDarkMode ? 'rgba(30,30,30,0.9)' : 'rgba(185,210,255,0.9)',
           borderWidth: isDarkMode ? 1 : 1,             
           borderColor: isDarkMode ? 'gray' : 'white', 
         },
