@@ -222,18 +222,73 @@ export default function App() {
     });
   };
 
-  // Handle prediction data received from server
+  // Add these state variables to your component
+  const [predictions, setPredictions] = useState<string[]>([]);
+  const threshold = 0.5; // Adjust this value as needed
+
+  // Updated prediction handler with the same logic as your web app
+  // Add these debugging logs to your handlePredictionResult function
   const handlePredictionResult = (data: PredictionResult) => {
-    if (data.prediction && data.confidence > 0.7) {
-      // Add to recognized signs if it's a new word (not the last one)
-      setRecognizedSigns(prev => {
-        // Only add if it's different from the last sign
-        if (prev.length === 0 || prev[prev.length - 1] !== data.prediction) {
-          return [...prev, data.prediction];
+    console.log('Received prediction:', data.prediction, 'with confidence:', data.confidence);
+    
+    // Update predictions array (buffering) with callback to ensure we use the latest state
+    setPredictions(prev => {
+      const newPredictions = [...prev, data.prediction];
+      console.log('Prediction buffer size:', newPredictions.length);
+      
+      // Process immediately inside this callback to use the updated predictions array
+      if (newPredictions.length >= 10) {
+        // Get the last 10 predictions
+        const lastTenPredictions = newPredictions.slice(-10);
+        
+        // Find the most common prediction
+        const mostCommon = findMostCommon(lastTenPredictions);
+        console.log('Most common prediction:', mostCommon, 'Current:', data.prediction);
+        
+        // Add to sentence if consistent and confidence is high
+        if (data.confidence > threshold && mostCommon === data.prediction) {
+          console.log('Conditions met, should add to recognized signs');
+          
+          // Update recognized signs in its own setState call
+          setRecognizedSigns(prevSigns => {
+            if (prevSigns.length === 0 || prevSigns[prevSigns.length - 1] !== data.prediction) {
+              console.log('Adding to recognized signs:', data.prediction);
+              return [...prevSigns, data.prediction];
+            }
+            console.log('Prediction already in recognized signs, not adding');
+            return prevSigns;
+          });
+        } else {
+          console.log(
+            'Conditions not met:', 
+            `confidence: ${data.confidence} > ${threshold} = ${data.confidence > threshold}`,
+            `mostCommon(${mostCommon}) === current(${data.prediction}) = ${mostCommon === data.prediction}`
+          );
         }
-        return prev;
-      });
+      } else {
+        console.log('Not enough predictions yet, need at least 10');
+      }
+      
+      // Keep the predictions array at a reasonable size
+      return newPredictions.length > 30 ? newPredictions.slice(-30) : newPredictions;
+    });
+  };
+
+  // Helper function to find the most common element in an array
+  const findMostCommon = (arr: string[]): string => {
+    const counts: Record<string, number> = {};
+    let maxCount = 0;
+    let maxItem = '';
+    
+    for (const item of arr) {
+      counts[item] = (counts[item] || 0) + 1;
+      if (counts[item] > maxCount) {
+        maxCount = counts[item];
+        maxItem = item;
+      }
     }
+    
+    return maxItem;
   };
 
   // Clear all recognized signs
