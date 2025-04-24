@@ -54,13 +54,13 @@ export default function Dropdown() {
             }
           />
         </TouchableOpacity>
-          {/* Tutorial Button */}
-          <TouchableOpacity 
-            style={styles.dropdownButton} 
-            onPress={() => setModalVisible(true)} // Open the modal when pressed
-          >
-            <Image 
-              style={styles.image} 
+        {/* Tutorial Button */}
+        <TouchableOpacity 
+          style={styles.dropdownButton} 
+          onPress={() => setModalVisible(true)} // Open the modal when pressed
+        >
+        <Image 
+          style={styles.image} 
               source={
                 isDarkMode
                   ? require('../../assets/images/dark-tutorial.png')
@@ -68,51 +68,98 @@ export default function Dropdown() {
               }
             />
           </TouchableOpacity>
+
+          {/* Modal */}
           <Modal 
             visible={modalVisible} 
             transparent={true} 
             animationType="slide"
           >
             <View style={styles.modalContainer}>
-              <View style={[styles.modalContent, { backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.7)' : 'rgba(255, 255, 255, 0.8)', borderColor: isDarkMode ? 'gray' : 'transparent', borderWidth: isDarkMode ? 1 : 0, }]}>
-                <Pressable style={styles.exitContainer} onPress={() => {
-                      setModalVisible(false);
-                      setTutorialStep(0);
-                    }}>
-                <Image 
-                  style={styles.exitIcon} 
-                  source={
-                    isDarkMode
-                      ? require('../../assets/images/light-exit-icon.png')
-                      : require('../../assets/images/dark-exit-icon.png')
-                  }
-                />
-                </Pressable>
-                <Text style={[styles.header, { color: isDarkMode ? '#FFF' : '#000' }]}>LET GET STARTED</Text>
-                <Text style={[styles.text, { color: isDarkMode ? '#DDD' : '#000' }]}>
-                  {tutorialStep === 0
-                    ? "Want to understand them more? You'll see two options: \"TEXT/SPEECH\" and \"FSL GESTURE\"."
-                    : "Want to understand a deaf friend? Open the camera to know what they are saying"}
+              <View
+                style={[
+                  styles.modalContent,
+                  {
+                    backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.7)' : 'rgba(255, 255, 255, 0.8)',
+                    borderColor: isDarkMode ? 'gray' : 'transparent',
+                    borderWidth: isDarkMode ? 1 : 0,
+                  },
+                ]}
+              >
+                <Text style={[styles.header, { color: isDarkMode ? '#FFF' : '#000' }]}>
+                  WELCOME TO FILSIGN!
                 </Text>
+
+                {/* Tutorial Images */}
+                {tutorialStep === 0 && (
+                <Image source={require('../../assets/images/icon.png')} style={styles.iconImage} />
+                )}
+                {tutorialStep === 1 && (
+                <Image source={require('../../assets/images/tutorial-1.png')} style={styles.tutorialImage} />
+                )}
+                {tutorialStep === 2 && (
+                  <Image source={require('../../assets/images/tutorial-1.png')} style={styles.tutorialImage} />
+                )}
+                {tutorialStep === 3 && (
+                  <Image source={require('../../assets/images/tutorial-2.png')} style={styles.tutorialImage} />
+                )}
+                {tutorialStep === 4 && (
+                  <Image source={require('../../assets/images/tutorial-3.png')} style={styles.tutorialImage} />
+                )}
+                {tutorialStep === 5 && (
+                  <Image source={require('../../assets/images/tutorial-4.png')} style={styles.tutorialImage} />
+                )}
+
+                {/* Tutorial Text */}
+                <Text style={[styles.text, { color: isDarkMode ? '#DDD' : '#000' }]}>
+                  {tutorialStep === 0 && 
+                    "Filsign helps you bridge communication between spoken language and Filipino Sign Language (FSL). This app recognizes hand gestures, converts them to text, and even speaks them out loud — and vice versa!"}
+                  {tutorialStep === 1 &&
+                    "More Button: Tap to reveal additional options and settings.\n\n" +
+                    "Dark/Light Mode: Switch between light and dark themes.\n\n" +
+                    "Help Button: View this instruction guide."}
+                  {tutorialStep === 2 &&
+                    "Camera Switch: Toggle between front and rear cameras.\n\n" +
+                    "Landmarks On/Off: Show or hide hand tracking landmarks.\n\n" +
+                    "Clear Output: Reset the current output to start fresh with new gestures."}
+                  {tutorialStep === 3 &&
+                    "In this container, you'll see two options: TEXT/SPEECH and FSL GESTURE"}
+                  {tutorialStep === 4 &&
+                    "FSL GESTURE to TEXT/SPEECH:\n\n" +
+                    "Speaker: Plays the translated output aloud."}
+                  {tutorialStep === 5 &&
+                    "TEXT/SPEECH to FSL GESTURE:\n\n" +
+                    "Play Video: Displays the FSL translation of your input.\n\n" +
+                    "Microphone: Speak instead of typing."}
+                </Text>
+
+                {/* Buttons */}
                 <View style={styles.buttonContainer}>
-                  <TouchableOpacity style={styles.buttonSkip} onPress={() => {
+                  <TouchableOpacity
+                    style={styles.buttonSkip}
+                    onPress={() => {
                       setModalVisible(false);
                       setTutorialStep(0);
-                    }}>
-                    <Text style={[styles.textButton, { color: isDarkMode ? '#FFF' : '#000' }]}>SKIP TUTORIAL</Text>
+                    }}
+                  >
+                    <Text style={[styles.textButton, { color: isDarkMode ? '#FFF' : '#000' }]}>
+                      SKIP TUTORIAL
+                    </Text>
                   </TouchableOpacity>
+
                   <TouchableOpacity
                     style={styles.buttonNext}
                     onPress={() => {
-                      if (tutorialStep === 0) {
-                        setTutorialStep(1);
+                      if (tutorialStep < 5) {
+                        setTutorialStep(tutorialStep + 1);
                       } else {
                         setModalVisible(false);
                         setTutorialStep(0);
                       }
-                    }}>
+                    }}
+                  >
                     <Text style={styles.textNext}>
-                      {tutorialStep === 0 ? 'NEXT' : 'DONE'}
+                      {tutorialStep < 5 ? 'NEXT' : 'DONE'}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -153,7 +200,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
     width: 330,           
-    height: 260,          
+    height: 450,          
     justifyContent: 'space-between',
   },
   exitIcon: {
@@ -167,34 +214,34 @@ const styles = StyleSheet.create({
     marginBottom: -30
   },
   header:{
-    fontSize: 24,
+    fontSize: 20,
     padding: 5,
     fontFamily: 'Akatab-SemiBold',
-    marginBottom: -25
+    marginBottom: -25,
+    textAlign: 'center'
   },
   text: {
-    fontSize: 15,
+    fontSize: 14,
     textAlign: 'justify',
     paddingBottom: 20,
     padding: 5,
     fontFamily: 'AlbertSans-Medium',
-    lineHeight: 22,
+    lineHeight: 16,
     marginBottom: -10
   },
   buttonContainer:{
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: -10
   },
   buttonSkip: {
-    paddingVertical: 20, 
+    paddingVertical: 13, 
     paddingHorizontal: 20,
     borderRadius: 20,
   },
   buttonNext: {
     marginRight: 10,
     backgroundColor: "#CE1126", 
-    paddingVertical: 20, 
+    paddingVertical: 13, 
     paddingHorizontal: 45,
     borderRadius: 15,
   },
@@ -208,4 +255,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'AlbertSans-Medium',
   },
+  tutorialImage: {
+    width: 260, 
+    height: 180, 
+    margin: 5, 
+    alignSelf: 'center'
+  },
+  iconImage:{
+    width: 250, 
+    height: 100,
+    alignSelf: 'center'
+  }
 });
