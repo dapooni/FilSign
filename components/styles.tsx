@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
       alignItems: 'center',
       gap: 2,
       top: 104,
-      right: 10
+      right: 0
     },
 
     /* Icon Button Size */

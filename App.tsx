@@ -29,3 +29,40 @@ const AppWithSplash = () => {
 
   return <Main />;
 };
+// import React from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createStackNavigator } from '@react-navigation/stack';
+// import HomeScreen from './screens/HomeScreen';
+// import TranscriptionScreen from './screens/TranscriptionScreen';
+// import OtherScreen from './screens/OtherScreen';
+
+// // Define the type for our stack navigator param list
+// export type RootStackParamList = {
+//   Home: undefined;
+//   Transcription: undefined;
+//   OtherScreen: undefined;
+// };
+
+// const Stack = createStackNavigator<RootStackParamList>();
+
+// const App: React.FC = () => {
+//   return (
+//     <NavigationContainer>
+//       <Stack.Navigator initialRouteName="Home">
+//         <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Home' }} />
+//         <Stack.Screen 
+//           name="Transcription" 
+//           component={TranscriptionScreen} 
+//           options={{ title: 'Live Transcription' }} 
+//         />
+//         <Stack.Screen 
+//           name="OtherScreen" 
+//           component={OtherScreen} 
+//           options={{ title: 'Other Screen' }} 
+//         />
+//       </Stack.Navigator>
+//     </NavigationContainer>
+//   );
+// };
+
+// export default App;

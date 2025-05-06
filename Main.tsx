@@ -222,7 +222,6 @@ export default function App() {
     });
   };
 
-  // Add these state variables to your component
   const [predictions, setPredictions] = useState<string[]>([]);
   const threshold = 0.5; // Adjust this value as needed
 
@@ -230,14 +229,19 @@ export default function App() {
   // Add these debugging logs to your handlePredictionResult function
   const handlePredictionResult = (data: PredictionResult) => {
     console.log('Received prediction:', data.prediction, 'with confidence:', data.confidence);
-    
+
+    // Skip processing if the prediction is "no_sign"
+    if (data.prediction === "no_sign") {
+      console.log('Skipping "no_sign" prediction');
+      return;
+    }
     // Update predictions array (buffering) with callback to ensure we use the latest state
     setPredictions(prev => {
       const newPredictions = [...prev, data.prediction];
       console.log('Prediction buffer size:', newPredictions.length);
       
       // Process immediately inside this callback to use the updated predictions array
-      if (newPredictions.length >= 10) {
+      if (newPredictions.length >= 2) {
         // Get the last 10 predictions
         const lastTenPredictions = newPredictions.slice(-10);
         

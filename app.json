@@ -22,26 +22,31 @@
       ],
       "package": "com.anonymous.FilSign"
     },
-      "plugins": [
-        [
-          "expo-font",
-          {
-            "fonts": [
-              "./assets/fonts/AlbertSans-Medium.ttf"
-            ]
-          }
-        ],
-        [
-          "expo-build-properties",
-          {
-            "android": {
-              "kotlinVersion": "1.9.25"
-            }
-          }
-        ]
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/AlbertSans-Medium.ttf"
+          ]
+        }
       ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.25"
+          }
+        }
+      ]
+    ],
     "ios": {
       "bundleIdentifier": "com.anonymous.FilSign"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a358e94d-cdaa-4e73-b40a-0189a20caede"
+      }
     }
   }
 }
