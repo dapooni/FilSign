@@ -30,8 +30,7 @@ const VideoPlayer = ({ glossText = "" }: { glossText?: string }) => {
   
     let matchedGlosses: string[] = [];
   
-    // List of untranslatable words to ignore
-    const ignoredWords = new Set(["THE", "IS", "A", "AN", "OF", "AND", "TO"]);
+    console.log("🗂 Gloss Dictionary:", glossDictionary.map(g => g.gloss));
   
     let i = 0;
     while (i < words.length) {
@@ -44,8 +43,8 @@ const VideoPlayer = ({ glossText = "" }: { glossText?: string }) => {
         // Convert Filipino phrase to English if available
         let translatedPhrase = filipinoToEnglish[phrase] || phrase;
   
-        if (glossDictionary.some(item => item.gloss === translatedPhrase)) {
-          matchedGlosses.push(translatedPhrase);
+        if (glossDictionary.some(item => item.gloss.toUpperCase() === translatedPhrase.toUpperCase())) {
+          matchedGlosses.push(translatedPhrase.toUpperCase());
           i = j;
           foundMatch = true;
           break;
@@ -59,8 +58,8 @@ const VideoPlayer = ({ glossText = "" }: { glossText?: string }) => {
         // Convert Filipino to English if available
         let translatedWord = filipinoToEnglish[singleWord] || singleWord;
   
-        if (glossDictionary.some(item => item.gloss === translatedWord)) {
-          matchedGlosses.push(translatedWord);
+        if (glossDictionary.some(item => item.gloss.toUpperCase() === translatedWord.toUpperCase())) {
+          matchedGlosses.push(translatedWord.toUpperCase());
         } else if (!ignoredWords.has(singleWord)) {
           // Step 3: Spell unknown words
           matchedGlosses.push(...singleWord.split('').map(letter => letter.toUpperCase()));
@@ -72,7 +71,9 @@ const VideoPlayer = ({ glossText = "" }: { glossText?: string }) => {
   
     // Step 4: Get video URLs for matched glosses
     const foundVideos = matchedGlosses
-      .map(gloss => glossDictionary.find(item => item.gloss === gloss)?.videoUrl)
+      .map(gloss =>
+        glossDictionary.find(item => item.gloss.toUpperCase() === gloss.toUpperCase())?.videoUrl
+      )
       .filter(Boolean) as string[];
   
     console.log("📝 Input Text:", glossText);
@@ -87,6 +88,7 @@ const VideoPlayer = ({ glossText = "" }: { glossText?: string }) => {
     setCurrentIndex(0);
     setLoading(false);
   }, [glossText]);
+  
    // This effect runs every time the glossText changes
 
   // Function to preload all videos
