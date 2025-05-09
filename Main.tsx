@@ -86,16 +86,31 @@ export default function App() {
                 --border-color: #444444;
                 --icon-color: #71A1FF;
               }
-              svg path {
+              #svg-button svg path {
                 stroke: #71A1FF !important;
               }
+              #prediction-svg svg path {
+                fill: #71A1FF !important;
+              }
+
+              .predictions {
+              background: rgba(255, 255, 255, 0.3)';
+              }
+
             \`;
               // Direct DOM manipulation for SVG elements
               const cameraBtnSVG = document.querySelector('#toggle-camera-btn svg');
+              const predictionBtnSVG = document.querySelector('#toggle-predictions-btn svg');
               if (cameraBtnSVG) {
                 const paths = cameraBtnSVG.querySelectorAll('path');
                 paths.forEach(path => {
                   path.setAttribute('stroke', '#71A1FF');
+                });
+              }
+              if (predictionBtnSVG) {
+                const paths = predictionBtnSVG.querySelectorAll('path');
+                paths.forEach(path => {
+                  path.setAttribute('fill', '#71A1FF');
                 });
               }
               
@@ -103,6 +118,8 @@ export default function App() {
               document.querySelectorAll('svg path[stroke="#0038A8"]').forEach(path => {
                 path.setAttribute('stroke', '#71A1FF');
               });
+              
+    
           } else {
             document.body.classList.add('light-theme');
             document.body.classList.remove('dark-theme');
@@ -116,17 +133,25 @@ export default function App() {
                 --icon-color: #0038A8;
               }
                      
-              svg path {
+              #svg-button svg path {
                 stroke: #0038A8 !important;
               }
+
             \`;
 
           // Direct DOM manipulation for SVG elements
           const cameraBtnSVG = document.querySelector('svg');
+          const predictionBtnSVG = document.querySelector('#toggle-predictions-btn svg');
           if (cameraBtnSVG) {
             const paths = cameraBtnSVG.querySelectorAll('path');
             paths.forEach(path => {
               path.setAttribute('stroke', '#0038A8');
+            });
+          }
+          if (predictionBtnSVG) {
+            const paths = predictionBtnSVG.querySelectorAll('path');
+            paths.forEach(path => {
+              path.setAttribute('fill', '#0038A8');
             });
           }
           
