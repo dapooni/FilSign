@@ -5,7 +5,9 @@ export const styles = StyleSheet.create({
     /* Main Screen */
     mainContainer: {
       flex: 1,
-      backgroundColor: 'transparent'
+      backgroundColor: 'transparent',
+      position: 'relative',
+      zIndex: 1
     },
 
     /* Camera View */
@@ -15,7 +17,7 @@ export const styles = StyleSheet.create({
       left: 0,
       right: 0,  
       bottom: 0,
-      zIndex: 0, // This puts it behind other elements 
+      zIndex: 1, // This puts it behind other elements 
       flex: 1,
       width: screenWidth,
       height: screenHeight,
@@ -33,7 +35,7 @@ export const styles = StyleSheet.create({
       paddingTop: 40,
       justifyContent: 'space-between',
       alignItems: 'flex-start',
-      zIndex: 1
+      zIndex: 4
     },
 
     rightButtons: {
@@ -82,7 +84,7 @@ export const styles = StyleSheet.create({
       shadowOpacity: 0.2,
       shadowRadius: 6.27,
       elevation: 10,
-      zIndex: 1,
+      zIndex: 3,
     },
     
     text: {  // (2)
@@ -117,7 +119,7 @@ export const styles = StyleSheet.create({
       paddingHorizontal: 10,
       paddingVertical: 8,
       height: 55,
-      zIndex: 2
+      zIndex: 30
     },
     
     /* Two Container for TranslateDropDown */
