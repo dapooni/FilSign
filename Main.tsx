@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TouchableOpacity, Image, TextInput, Text } from 'react-native';
+import { View, TouchableOpacity, Image, TextInput, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useFonts } from 'expo-font';
 import VideoPlayer from './components/VideoPlayer';
 import SpeechToText from "./components/SpeechToText";
 import * as Speech from 'expo-speech';
 import io, { Socket } from 'socket.io-client';
 import { WebView } from 'react-native-webview';
+import { Video, ResizeMode } from 'expo-av';
 
 import TranslateDropdown from './components/DropDown/Translate';
 import SettingDropdown from './components/DropDown/Setting';
@@ -53,8 +54,27 @@ export default function App() {
   const [glossText, setGlossText] = useState(WAITING_TEXT); // Initial state with waiting text
   const [recognizedSigns, setRecognizedSigns] = useState<string[]>([]);
   const [connected, setConnected] = useState(false);
-  const [isSwitchingCamera, setIsSwitchingCamera] = useState(false);
   const [isEyeOn, setIsEyeOn] = useState(false);
+
+  const [showVideo, setShowVideo] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0); // assuming multiple videos
+  const [videoUris, setVideoUris] = useState<string[]>([]);
+  const videoRef = useRef<Video>(null);
+
+  const handlePlayPress = () => {
+  if (videoUris.length > 0) {
+    setShowVideo(true);
+  }
+};
+
+  const handleVideoEnd = () => {
+  if (currentIndex < videoUris.length - 1) {
+      setCurrentIndex(prevIndex => prevIndex + 1);
+    } else {
+      setCurrentIndex(0);
+      setShowVideo(false);
+    }
+};
 
   const [fontsLoaded] = useFonts({
     'AlbertSans-Medium': require('./assets/fonts/AlbertSans-Medium.ttf'),
@@ -132,7 +152,6 @@ export default function App() {
                 --border-color: #cccccc;
                 --icon-color: #0038A8;
               }
-                     
               #svg-button svg path {
                 stroke: #0038A8 !important;
               }
@@ -371,46 +390,11 @@ export default function App() {
   };
 
   return (
-    <View style={styles.mainContainer}>
-      {/* Upper Buttons */}
-      <View style={styles.upperButtons} pointerEvents="box-none">
-        <SettingDropdown />
-        <View style={styles.rightButtons}>
-          {/* Clear Text Outputs */}
-          <TouchableOpacity style={{ marginTop: 6 }} onPress={clearSigns}>
-            <Image
-              style={[
-                styles.restartIcon,
-              ]}
-              source={
-                isDarkMode
-                ? require('./assets/images/dark-restart-icon.png')
-                : require('./assets/images/light-restart-icon.png')
-              }
-            /> 
-          </TouchableOpacity>
-        </View>
-      </View>
-      
-      {/* Connection status indicator - optional */}
-      {fromValue === '1' && (
-        <View style={{
-          position: 'absolute',
-          top: 10,
-          right: 10,
-          backgroundColor: connected ? 'rgba(0,255,0,0.5)' : 'rgba(255,0,0,0.5)',
-          padding: 5,
-          borderRadius: 5,
-          zIndex: 100
-        }}>
-          <Text style={{ color: 'white', fontSize: 12 }}>
-            {connected ? 'Connected' : 'Disconnected'}
-          </Text>
-        </View>
-      )}
-      
-      {/* WebView for camera interface */}
-      <WebView 
+  <View style={{ flex: 1 }}>
+  {!showVideo ? (
+    // WebView background
+    <>
+      <WebView
         ref={webViewRef}
         source={{ uri: SERVER_URL }}
         style={styles.cameraView}
@@ -423,107 +407,171 @@ export default function App() {
         allowUniversalAccessFromFileURLs={true}
         originWhitelist={['*']}
         onShouldStartLoadWithRequest={() => true}
-        onError={(syntheticEvent) => {
-          console.log('WebView error: ', syntheticEvent.nativeEvent);
+        onError={(e) => {
+          console.log('WebView error: ', e.nativeEvent);
         }}
-          onHttpError={(syntheticEvent) => {
-          console.log('WebView HTTP error: ', syntheticEvent.nativeEvent);
+        onHttpError={(e) => {
+          console.log('WebView HTTP error: ', e.nativeEvent);
         }}
         onMessage={(event) => {
-          // Optional: Handle messages from web app
           console.log('Message from WebView:', event.nativeEvent.data);
         }}
-       />
-
-      {/* Two-Way Communication Choices */}
-      <View style={styles.transContainer}>
-        <View style={styles.transDropdown}>
-          <TranslateDropdown
-            selectedValue={fromValue}
-            onSelect={setFromValue}
-          />
-        </View>
-        {/* Switch FromSelected to ToSelected */}
-        <TouchableOpacity style={styles.circle} onPress={swapValues}>
-          <Image
-            style={styles.switchIcon}
-            source={require('./assets/images/switch-way.png')}
-          />
-        </TouchableOpacity>
-        <View style={styles.transDropdown}>
-          <TranslateDropdown
-            selectedValue={toValue}
-            onSelect={setToValue}
-          />
-        </View>
-      </View>
-
-      {/* Text Input/Output Container */}
-      <View style={[ styles.textContainer,
-        {
-          backgroundColor: isDarkMode ? 'rgba(30,30,30,0.9)' : 'rgba(185,210,255,0.9)',
-          borderWidth: isDarkMode ? 1 : 1,             
-          borderColor: isDarkMode ? 'gray' : 'white', 
-        },
-      ]}>
-        <TextInput
-          style={[
-            styles.text,
-            { 
-              color: isDarkMode ? '#fff' : '#000',
-              fontStyle: fromValue === '1' && glossText === WAITING_TEXT ? 'italic' : 'normal'
-            } 
-          ]}
-          editable={fromValue !== '1'} // Disable input when FSL GESTURE is selected
-          placeholder={fromValue !== '1' ? "Type gloss here..." : ""}
-          placeholderTextColor={isDarkMode ? '#aaa' : '#000'}
-          value={glossText}
-          onChangeText={handleTextChange}
-          multiline={true}
-          numberOfLines={3}
-          scrollEnabled={true}
-        />
-  
-        {/* Speaker/Microphone Button */}
-        <TouchableOpacity
-          style={styles.speakerButton}
-          onPress={() => {
-            if (fromValue === '1') {
-              // ✅ TEXT TO SPEECH
-              if (glossText.trim() !== '') {
-                Speech.speak(glossText, {
-                  language: 'en', // or 'fil'
-                  pitch: 1.1,
-                  rate: 1.0,
-                });
-              }
-            } else {
-              // 🎤 SPEECH TO TEXT or ▶️ Play
-              setIsPressed(prev => !prev);
-            }
-          }}
-        >
-        <Image
-          style={styles.buttonIcon}
-          source={
-            fromValue === '1'
-              ? require('./assets/images/speaker.png')
-              : (isPressed
-                ? require('./assets/images/mic-pressed.png')       // Mic pressed
-                : require('./assets/images/mic.png'))              // Mic idle
+      />
+    </>
+  ) : (
+    // Video player view
+    <View style={styles.videoContainer}>
+      <Video
+        ref={videoRef}
+        source={{ uri: videoUris[currentIndex] }}
+        style={styles.video}
+        useNativeControls
+        shouldPlay
+        isMuted={true}
+        resizeMode={ResizeMode.CONTAIN}
+        isLooping={false}
+        onPlaybackStatusUpdate={(status: any) => {
+          if (status?.didJustFinish) {
+            handleVideoEnd();
           }
-        />
-        </TouchableOpacity>
-
-        {/* Video Player - Display video based on gloss input */}
-        {fromValue === '2' && glossText !== '' && (
-          <VideoPlayer glossText={glossText} />
-        )}
-      </View>
-
-      {/* Speech-to-Text Component */}
-      <SpeechToText isListening={isPressed} onTranscription={setGlossText} />
-
+        }}
+      />
     </View>
+  )}
+
+    {/* Foreground Content */}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.mainContainer}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+    >
+        {/* Upper Buttons */}
+        <View style={styles.upperButtons} pointerEvents="box-none">
+          <SettingDropdown />
+          <View style={styles.rightButtons}>
+            <TouchableOpacity style={{ marginTop: 6 }} onPress={clearSigns}>
+              <Image
+                style={styles.restartIcon}
+                source={
+                  isDarkMode
+                    ? require('./assets/images/dark-restart-icon.png')
+                    : require('./assets/images/light-restart-icon.png')
+                }
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Connection Status */}
+        {fromValue === '1' && (
+          <View style={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+            backgroundColor: connected ? 'rgba(0,255,0,0.5)' : 'rgba(255,0,0,0.5)',
+            padding: 5,
+            borderRadius: 5,
+            zIndex: 10
+          }}>
+            <Text style={{ color: 'white', fontSize: 12 }}>
+              {connected ? 'Connected' : 'Disconnected'}
+            </Text>
+          </View>
+        )}
+
+        {/* Two-Way Translation Controls */}
+        <View style={styles.transContainer}>
+          <View style={styles.transDropdown}>
+            <TranslateDropdown selectedValue={fromValue} onSelect={setFromValue} />
+          </View>
+          <TouchableOpacity style={styles.circle} onPress={swapValues}>
+            <Image
+              style={styles.switchIcon}
+              source={require('./assets/images/switch-way.png')}
+            />
+          </TouchableOpacity>
+          <View style={styles.transDropdown}>
+            <TranslateDropdown selectedValue={toValue} onSelect={setToValue} />
+          </View>
+        </View>
+
+        {/* Text Input/Output Section */}
+        <View
+          style={[
+            styles.textContainer,
+            {
+              backgroundColor: isDarkMode ? 'rgba(30,30,30,0.9)' : 'rgba(185,210,255,0.9)',
+              borderWidth: 1,
+              borderColor: isDarkMode ? 'gray' : 'white',
+            },
+          ]}
+        >
+          <TextInput
+            style={[
+              styles.text,
+              {
+                color: isDarkMode ? '#fff' : '#000',
+                fontStyle: fromValue === '1' && glossText === WAITING_TEXT ? 'italic' : 'normal',
+              },
+            ]}
+            editable={fromValue !== '1'}
+            placeholder={fromValue !== '1' ? 'Type gloss here...' : ''}
+            placeholderTextColor={isDarkMode ? '#aaa' : '#000'}
+            value={glossText}
+            onChangeText={handleTextChange}
+            multiline={true}
+            numberOfLines={3}
+            scrollEnabled={true}
+          />
+
+          {fromValue !== '1' && videoUris.length === 0 && glossText.trim() !== '' && (
+            <Text style={styles.noVideoText}>
+              No videos found for "{glossText}"
+            </Text>
+          )}
+
+          {/* Speaker / Mic */}
+          <TouchableOpacity
+            style={styles.speakerButton}
+            onPress={() => {
+              if (fromValue === '1') {
+                if (glossText.trim() !== '') {
+                  Speech.speak(glossText, {
+                    language: 'en',
+                    pitch: 1.1,
+                    rate: 1.0,
+                  });
+                }
+              } else {
+                setIsPressed(prev => !prev);
+              }
+            }}
+          >
+            <Image
+              style={styles.buttonIcon}
+              source={
+                fromValue === '1'
+                  ? require('./assets/images/speaker.png')
+                  : (isPressed
+                    ? require('./assets/images/mic-pressed.png')
+                    : require('./assets/images/mic.png'))
+              }
+            />
+          </TouchableOpacity>
+
+          {/* Play Button for FSL Gloss */}
+          {fromValue === '2' && glossText !== '' && (
+            <VideoPlayer
+              glossText={glossText}
+              onPlayPress={handlePlayPress}
+              setVideoUris={setVideoUris}
+            />
+          )}
+        </View>
+
+        {/* SpeechToText */}
+        <SpeechToText isListening={isPressed} onTranscription={setGlossText} />
+    </KeyboardAvoidingView>
+  </View>
   );
 }
